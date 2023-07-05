@@ -7,6 +7,7 @@ const SensorChart = ({ sensorNumber }) => {
   const canvasRef = useRef(null); // Ссылка на DOM-элемент canvas
   const chartRef = useRef(null); // Ссылка на экземпляр Chart.js
   const [chartData, setChartData] = useState(null); // Состояние данных для графика
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const chartColors = ['#FF6384', '#36A2EB', '#FFCE56']; // Цвета для секторов графика
   // Получение и перепаковка данных
   useEffect(() => {
@@ -15,8 +16,11 @@ const SensorChart = ({ sensorNumber }) => {
         const config = { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } };
         const response = await axios.post('http://qcan.tactics.su/test_ivan.php?load_data', { sensor: sensorNumber }, config);
         const data = response.data;
-
-        if (data.status !== 1) {
+        //////
+        const response2 = await axios.get(`http://qcan.tactics.su/test_ivan.php?load_data&status`);
+        const data2 = response2.data;
+        //////
+        if (data.status !== 1 ||  data2.status !== 1) {
           throw new Error('Ошибка получения данных');
         }
 
@@ -24,10 +28,13 @@ const SensorChart = ({ sensorNumber }) => {
         const dataArr = [];
 
         for (const key in data.answer) {
-          labels.push(key);
           dataArr.push(data.answer[key]);
+          labels.push(data2.answer[key]);
+          //
+          
         }
-
+        console.log(data.answer);
+        console.log(data2.answer);
         setChartData({ labels, data: dataArr }); // Установка полученных данных в состояние
       } catch (error) {
         console.error(error);
@@ -82,7 +89,7 @@ const SensorChart = ({ sensorNumber }) => {
         chartRef.current.update(); // Обновление графика
       }
     }
-  }, [chartData, sensorNumber]);
+  }, [chartColors, chartData, sensorNumber]);
 
   return <canvas className="doughnut" ref={canvasRef} />; // Возвращение компонента canvas для отображения графика
 };

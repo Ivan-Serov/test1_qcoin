@@ -1,6 +1,6 @@
 import './App.css';
 import React from 'react';
-import SensorChart from './SensorChart';
+import SensorChart from './components/SensorChart/SensorChart';
 
 function App() {
   return (
