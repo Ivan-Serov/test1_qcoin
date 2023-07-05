@@ -16,10 +16,9 @@ const SensorChart = ({ sensorNumber }) => {
         const config = { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } };
         const response = await axios.post('http://qcan.tactics.su/test_ivan.php?load_data', { sensor: sensorNumber }, config);
         const data = response.data;
-        //////
         const response2 = await axios.get(`http://qcan.tactics.su/test_ivan.php?load_data&status`);
         const data2 = response2.data;
-        //////
+
         if (data.status !== 1 ||  data2.status !== 1) {
           throw new Error('Ошибка получения данных');
         }
@@ -30,11 +29,8 @@ const SensorChart = ({ sensorNumber }) => {
         for (const key in data.answer) {
           dataArr.push(data.answer[key]);
           labels.push(data2.answer[key]);
-          //
           
         }
-        console.log(data.answer);
-        console.log(data2.answer);
         setChartData({ labels, data: dataArr }); // Установка полученных данных в состояние
       } catch (error) {
         console.error(error);
