@@ -9,6 +9,7 @@ const SensorChart = ({ sensorNumber }) => {
   const [chartData, setChartData] = useState(null); // Состояние данных для графика
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const chartColors = ['#FF6384', '#36A2EB', '#FFCE56']; // Цвета для секторов графика
+  
   // Получение и перепаковка данных
   useEffect(() => {
     const fetchData = async () => {
@@ -26,7 +27,7 @@ const SensorChart = ({ sensorNumber }) => {
         const labels = [];
         const dataArr = [];
 
-        for (const key in data.answer) {
+        for (const key in data2.answer) {
           dataArr.push(data.answer[key]);
           labels.push(data2.answer[key]);
           
@@ -50,7 +51,7 @@ const SensorChart = ({ sensorNumber }) => {
     if (chartData) {
       if (!chartRef.current) { // Если экземпляр Chart.js не был создан
         const ctx = canvasRef.current.getContext('2d'); // Получение контекста отрисовки для canvas
-
+        
         const chartConfig = {
           type: 'doughnut', // Тип графика - "донат"
           data: {
@@ -59,7 +60,7 @@ const SensorChart = ({ sensorNumber }) => {
               {
                 label: `Sensor ${sensorNumber}`, // Название датасета
                 data: chartData.data, // Данные для секторов графика
-                backgroundColor: chartColors, // Цвета для секторов графика
+                backgroundColor: chartColors,  // Цвета для секторов графика
               },
             ],
           },
