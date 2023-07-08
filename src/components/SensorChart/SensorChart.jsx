@@ -55,48 +55,51 @@ const SensorChart = ({ sensorNumber }) => {
   }, [sensorNumber]);
   
   // Создание диаграммы
+
   useEffect(() => {
     if (chartData) {
-      if (chartRef.current) {
-        chartRef.current.destroy(); // Удаление диаграммы, если она уже существует
-      }
+      if (!chartRef.current) { // Если экземпляр Chart.js не был создан
+        const ctx = canvasRef.current.getContext('2d'); // Получение контекста отрисовки для canvas
 
-      const ctx = canvasRef.current.getContext('2d'); // Получение контекста отрисовки для canvas
-      
-      const chartConfig = {
-        type: 'doughnut', // Тип графика - "донат"
-        data: {
-          labels: chartData.labels, // Метки для секторов графика
-          datasets: [
-            {
-              label: `Sensor ${sensorNumber}`, // Название датасета
-              data: chartData.data, // Данные для секторов графика
-              backgroundColor: chartColors,  // Цвета для секторов графика
-            },
-          ],
-        },
-        options: {
-          maintainAspectRatio: false, // Отключение автоподстройки размеров графика
-          plugins: {
-            tooltip: {
-              callbacks: {
-                label: function (context) {
-                  const label = context.label;
-                  const percent = chartData.data[context.dataIndex];
-                  return `${label}: ${percent}%`; // Форматирование текста всплывающей подсказки
+        const chartConfig = {
+          type: 'doughnut', // Тип графика - "донат"
+          data: {
+            labels: chartData.labels, // Метки для секторов графика
+            datasets: [
+              {
+                label: `Sensor ${sensorNumber}`, // Название датасета
+                data: chartData.data, // Данные для секторов графика
+                backgroundColor: chartColors,  // Цвета для секторов графика
+              },
+            ],
+          },
+          options: {
+            maintainAspectRatio: false, // Отключение автоподстройки размеров графика
+            plugins: {
+              tooltip: {
+                callbacks: {
+                  label: function (context) {
+                    return  context.parsed.toFixed(2) + '%'; // Форматирование текста всплывающей подсказки
+                  },
                 },
               },
             },
           },
-        },
-      };
+        };
 
-      chartRef.current = new Chart(ctx, chartConfig);
+        chartRef.current = new Chart(ctx, chartConfig); // Создание нового экземлпяра Chart.js и сохранение ссылки
+        chartRef.current.update(); // Обновление графика
+      } else { // Если экземпляр Chart.js уже существует
+        chartRef.current.data.labels = chartData.labels; // Обновление меток секторов графика
+        chartRef.current.data.datasets[0].data = chartData.data; // Обновление данных секторов графика
+        chartRef.current.update(); // Обновление графика
+      }
     }
   }, [chartColors, chartData, sensorNumber]);
 
-  return <canvas className="doughnut" ref={canvasRef} />;
+  return <canvas className="doughnut" ref={canvasRef} />; // Возвращение компонента canvas для отображения графика
 };
+
 
 export default SensorChart;
 
