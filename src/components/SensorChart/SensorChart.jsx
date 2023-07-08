@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import axios from 'axios';
 import Chart from 'chart.js/auto';
 import './SensorChart.css';
-import {  chartColors, config, percentages, } from '../../utils/constants'
+import {  chartColors, config, percentages, url} from '../../utils/constants'
 
 const SensorChart = ({ sensorNumber }) => {
   const canvasRef = useRef(null); // Ссылка на DOM-элемент canvas
@@ -13,8 +13,8 @@ const SensorChart = ({ sensorNumber }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.post('http://qcan.tactics.su/test_ivan.php?load_data', { sensor: sensorNumber }, config);
-        const response2 = await axios.get('http://qcan.tactics.su/test_ivan.php?load_data&status');
+        const response = await axios.post(url, { sensor: sensorNumber }, config);
+        const response2 = await axios.get(`${url}&status`);
         let data = response.data.answer;
         let data2 = response2.data.answer;
         
